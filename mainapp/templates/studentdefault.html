@@ -1,0 +1,27 @@
+{% extends 'default.html' %}
+{% load static %}
+{% block menu %}
+<!-- Left column: logo and menu -->
+    <div class="tm-blue-bg tm-left-column">                        
+        <div class="tm-logo-div text-xs-center">
+<img src="{% static 'img/tm-neaty-logo.png' %}"" alt="Logo">
+<h1 class="tm-site-name">Universal College</h1>
+        </div>
+        <nav class="tm-main-nav">
+<ul class="tm-main-nav-ul">
+
+<li class="tm-nav-item">
+<a href="/student/home" class="tm-nav-item-link">Student Home</a>
+</li>
+
+<li class="tm-nav-item">
+        <a href="/student/ask" class="tm-nav-item-link">Ask Question</a>
+            </li>
+
+<li class="tm-nav-item">
+    <a href="/logout" class="tm-nav-item-link">Logout</a>
+        </li>
+</ul>
+        </nav>              
+    </div> <!-- Left column: logo and menu -->
+{% endblock %}
