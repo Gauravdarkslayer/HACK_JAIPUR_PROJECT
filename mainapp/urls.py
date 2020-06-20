@@ -4,7 +4,7 @@ urlpatterns = [
     path('college/', include('web.urls')),
     path('student/', include('student.urls')),
     path('faculty/', include('faculty.urls')),
-    path('complete/',include('auth0login.urls')),
+    path('',include('auth0login.urls')),
     # path('', include('django.contrib.auth.urls')),
 
    
