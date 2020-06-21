@@ -1,6 +1,6 @@
 from django.shortcuts import render , redirect
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.contrib.auth import logout as log_out
 from urllib.parse import urlencode
 import smtplib
@@ -173,6 +173,7 @@ def verify(request):
 
 
 def logout(request):
+    print("This is Logout method")
     del request.session['userdata']
     log_out(request)
     return_to = urlencode({'returnTo': request.build_absolute_uri('/college/home/')})
