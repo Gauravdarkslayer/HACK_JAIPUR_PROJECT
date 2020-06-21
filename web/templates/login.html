@@ -6,8 +6,8 @@
 
     <section id="contact" class="tm-section">
 
-       {% if userdata %}
-        {{ userdata }}
+       {% if userdata1 %}
+        {{ userdata1 }}
         {% endif %}
     <div class="row">
         <form action='/college/register' method="post">
@@ -15,23 +15,21 @@
 
         <div class="col-lg-6">
 
-            <h1>Register Here</h1>
+            <h1>Fill Your Info</h1>
             <hr>
             <div class="form-group">
                 <input type="text" id="contact_name"
                 name="username" class="form-control" placeholder="User Name"
-                {% if userdata %}
-                 value= {{ userdata.name }}
-                 {% endif %} required/>
+                 value= "{{ userdata.name }}"
+                    required/>
             </div>
 
             <div class="form-group">
                     <input type="text" id="contact_name"
-                    name="email" class="form-control" placeholder="Email"
-                           {% if userdata %}
-                            value= {{ userdata.email }}
-                            disabled
-                            {% endif %}   required/>
+                    name="email_data" class="form-control" placeholder="Email"
+                            value= "{{ userdata.email }}"
+                        
+                        required/>
             </div>
 
             {% if userdata %}
@@ -40,10 +38,9 @@
             <div class="form-group">
                     <input type="password" id="contact_name"
                     name="pwd" class="form-control" placeholder="Password"
-                      {% if userdata %}
-                        value= {{ userdata.pass }}
-                            disabled
-                        {% endif %}     required />
+                        value= "{{ userdata.pass }}"
+                        
+                         required />
             </div>
             {% endif %}
 
@@ -68,7 +65,7 @@
 
 
             <div class="form-group">
-                    <button type='submit' class="btn btn-success">Sign Up</button>
+                    <button type='submit' class="btn btn-success">Next</button>
             </div>
         </div>
         </form>

@@ -1,7 +1,8 @@
 from django.shortcuts import render , redirect
 from django.conf import settings
 from django.http import HttpResponse
-
+from django.contrib.auth import logout as log_out
+from urllib.parse import urlencode
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -28,6 +29,7 @@ def saveContact(request):
 
 def login(request): # /college/login
     msg = ""
+    from django.db import connection
     err = request.GET.get("error")
     if err is not None:
         msg = "Invalid User !"
@@ -42,36 +44,54 @@ def login(request): # /college/login
             # 'picture': auth0user.extra_data['picture'],
             'email': auth0user.extra_data['email']
         }
-        return render(request,"login.html",{'userdata':userdata})
+        mail = userdata['email']
+        records=[]
+        with connection.cursor() as cr:
+            cr.execute("select type,uid,name,mail,branch from user where mail='{}'".format(mail))
+            records = cr.fetchall()
+        if len(records) == 0:
+            return render(request,"login.html",{'userdata1':"Sucessfully Logged In.. Please fill the form below, to move ahead","userdata":userdata})
+        else:
+            type = records[0][0]
+            id = records[0][1]
+            name = records[0][2]
+            email = records[0][3]
+            branch = records[0][4]
+            user = {"id":id,"name":name,"email":email,"branch":branch,"type":type}
+            request.session['userdata'] = user
+            if type == 1:
+                return redirect("/student/home")
+            else:
+                return redirect("/faculty/home")
     return render(request,"login.html",{"msg":msg})
 
 def register(request):
     from django.db import connection
     name = request.POST.get('username')
-    email = request.POST.get('email')
+    email = request.POST.get('email_data')
     pwd = request.POST.get('pwd')
     type = request.POST.get('type')
     branch = request.POST.get('branch')
-
-    from cryptography.fernet import Fernet
-    cipher_suite = Fernet(HASHKEY)
-    pwd = bytes(pwd,'utf-8')
-    ciphered_text = cipher_suite.encrypt(pwd)   #required to be bytes
-    print(ciphered_text)
-    # otp = sendMail(name,email)
-
-    # query = "insert into user(name,mail,password,type,branch) values ('{0}','{1}','{2}',{3},{4})".format(name,email,ciphered_text,type,branch)
-
-
-    # cnn = settings.CONNECTION()
+    print(request.POST)
     with connection.cursor() as cr:
         # cr = cnn.cursor()
         cr.execute(
-    "insert into user(name,mail,password,type,branch) values (%s,%s,%s,%s,%s)",[name,email,ciphered_text,type,branch])
+    "insert into user(name,mail,password,type,branch) values (%s,%s,%s,%s,%s)",[name,email,pwd,type,branch])
         # cnn.commit()
         # cnn.close()
+    with connection.cursor() as cr:
+        # cr = cnn.cursor()
+        cr.execute("select uid from user where mail = '{}'".format(email))
+        id = cr.fetchall()[0][0]
 
-    # return HttpResponse("Register User Success !")
+    user = {"id":id,"name":name,"email":email,"branch":branch,"type":type}
+    request.session['userdata'] = user
+    print("Type is ",type)
+    if type=="1": # faculty
+        return redirect('/faculty/home')
+    else: # student
+        return redirect('/student/home')
+    
     return redirect("/login")
 
 def loginuser(request):
@@ -155,7 +175,7 @@ def verify(request):
 def logout(request):
     del request.session['userdata']
     log_out(request)
-    return_to = urlencode({'returnTo': request.build_absolute_uri('/')})
+    return_to = urlencode({'returnTo': request.build_absolute_uri('/college/home/')})
     logout_url = 'https://%s/v2/logout?client_id=%s&%s' % \
                  (settings.SOCIAL_AUTH_AUTH0_DOMAIN, settings.SOCIAL_AUTH_AUTH0_KEY, return_to)
     return HttpResponseRedirect(logout_url)
