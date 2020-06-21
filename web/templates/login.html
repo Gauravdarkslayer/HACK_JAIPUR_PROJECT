@@ -6,35 +6,52 @@
 
     <section id="contact" class="tm-section">
 
-       
+       {% if userdata %}
+        {{ userdata }}
+        {% endif %}
     <div class="row">
-        <form action='/college/register' method="post"> 
+        <form action='/college/register' method="post">
             {% csrf_token %}
 
         <div class="col-lg-6">
 
             <h1>Register Here</h1>
-            <hr>    
+            <hr>
             <div class="form-group">
-                <input type="text" id="contact_name" 
-                name="username" class="form-control" placeholder="User Name"  required/>
+                <input type="text" id="contact_name"
+                name="username" class="form-control" placeholder="User Name"
+                {% if userdata %}
+                 value= {{ userdata.name }}
+                 {% endif %} required/>
             </div>
 
             <div class="form-group">
-                    <input type="text" id="contact_name" 
-                    name="email" class="form-control" placeholder="Email"  required/>
+                    <input type="text" id="contact_name"
+                    name="email" class="form-control" placeholder="Email"
+                           {% if userdata %}
+                            value= {{ userdata.email }}
+                            disabled
+                            {% endif %}   required/>
             </div>
-    
+
+            {% if userdata %}
+
+
             <div class="form-group">
-                    <input type="password" id="contact_name" 
-                    name="pwd" class="form-control" placeholder="Password"  required/>
+                    <input type="password" id="contact_name"
+                    name="pwd" class="form-control" placeholder="Password"
+                      {% if userdata %}
+                        value= {{ userdata.pass }}
+                            disabled
+                        {% endif %}     required />
             </div>
+            {% endif %}
 
             <div class="form-group">
                     <select name="type" class="form-control"required>
                         <option value=''>Select Your Type</option>
                         <option value='1'>Faculty</option>
-                        <option value='2'>Student</option>                        
+                        <option value='2'>Student</option>
                     </select>
             </div>
 
@@ -43,12 +60,12 @@
                     <select name="branch" class="form-control"required>
                         <option value=''>Select Your Branch</option>
                         <option value='1'>Computer Science</option>
-                        <option value='2'>Electronic and Communication</option>                        
-                        <option value='3'>Mechanical</option>                                                
+                        <option value='2'>Electronic and Communication</option>
+                        <option value='3'>Mechanical</option>
                     </select>
             </div>
-    
-    
+
+
 
             <div class="form-group">
                     <button type='submit' class="btn btn-success">Sign Up</button>
@@ -56,20 +73,20 @@
         </div>
         </form>
 
-        <form action="/college/loginuser" method="post">
+        <!-- <form action="/college/loginuser" method="post">
                     {% csrf_token %}
         <div class="col-lg-6">
             <h1>Login Here</h1>
             <hr>
             <div class="form-group">
-                    <input type="text" id="contact_name" 
+                    <input type="text" id="contact_name"
                     name="email" class="form-control" placeholder="User Email ID"  required/>
             </div>
 
             <div class="form-group">
-                <input type="password" id="contact_name" 
+                <input type="password" id="contact_name"
                      name="pwd" class="form-control" placeholder="Password"  required/>
-            </div>                
+            </div>
 
             <div class="form-group">
                 <button class="btn btn-success">Sign In</button>
@@ -77,8 +94,8 @@
                 <b class='text-danger'>{{msg}}</b>
             </div>
         </div>
-        </form>
-    </div>        
+        </form> -->
+    </div>
 
     </section>
 {% endblock %}

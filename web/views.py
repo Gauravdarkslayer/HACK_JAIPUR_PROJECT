@@ -11,7 +11,7 @@ HASHKEY = b'pRmgMa8T0INjEAfksaq2aafzoZXEuwKI7wDe4c1F8AY='
 
 
 def home(request):
-    return render(request,"index.html")
+    return render(request,"index1.html")
 
 def about(request):
     return render(request,"about.html")
@@ -32,6 +32,17 @@ def login(request): # /college/login
     if err is not None:
         msg = "Invalid User !"
 
+    if request.user:
+        user = request.user
+        auth0user = user.social_auth.get(provider='auth0')
+        userdata = {
+            'user_id': auth0user.uid,
+            'name': user.first_name,
+            'pass':user.password,
+            # 'picture': auth0user.extra_data['picture'],
+            'email': auth0user.extra_data['email']
+        }
+        return render(request,"login.html",{'userdata':userdata})
     return render(request,"login.html",{"msg":msg})
 
 def register(request):
@@ -46,12 +57,12 @@ def register(request):
     cipher_suite = Fernet(HASHKEY)
     pwd = bytes(pwd,'utf-8')
     ciphered_text = cipher_suite.encrypt(pwd)   #required to be bytes
-    print(ciphered_text) 
+    print(ciphered_text)
     # otp = sendMail(name,email)
 
     # query = "insert into user(name,mail,password,type,branch) values ('{0}','{1}','{2}',{3},{4})".format(name,email,ciphered_text,type,branch)
 
-    
+
     # cnn = settings.CONNECTION()
     with connection.cursor() as cr:
         # cr = cnn.cursor()
@@ -60,7 +71,8 @@ def register(request):
         # cnn.commit()
         # cnn.close()
 
-    return HttpResponse("Register User Success !")
+    # return HttpResponse("Register User Success !")
+    return redirect("/login")
 
 def loginuser(request):
     email = request.POST.get('email')
@@ -68,10 +80,10 @@ def loginuser(request):
 
     from cryptography.fernet import Fernet
     cipher_suite = Fernet(HASHKEY)
-    
+
 
     # query = "select * from user where mail='{0}' and password='{1}'".format(email,pwd)
-    
+
     query = "select * from user where mail='{0}'".format(email)
     cnn = settings.CONNECTION()
 
@@ -89,21 +101,21 @@ def loginuser(request):
         print("this is uncipherd txt>>>>>>",unciphered_text)
     except Exception as e:
         print(":Exception")
-        
+
         return redirect("/college/login?error=1")
-    
-    
+
+
     if pwd != unciphered_text.decode("utf-8"):
         print("pwd not matched")
         msg = "Login Failed !"
         return redirect('/college/login?error=1')
-    else:   
-    
+    else:
 
-    
+
+
         print(">>>>>> ",record)
-    
-    
+
+
         id = record[0]
         name = record[1]
         email = record[2]
