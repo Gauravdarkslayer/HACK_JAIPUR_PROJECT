@@ -47,7 +47,7 @@ def CONNECTION():
     return connection
 
 # Session entry
-SESSION_ENGINE= "django.contrib.sessions.backends.file"    
+SESSION_ENGINE= "django.contrib.sessions.backends.file"
 
 
 # Application definition
@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles','auth0login',
-    'mainapp','web','student','faculty',
+    'mainapp','web','student','faculty',"social_django",
 ]
 
 MIDDLEWARE = [
@@ -174,4 +174,4 @@ AUTHENTICATION_BACKENDS = {
 }
 
 LOGIN_URL = '/login/auth0'
-# LOGIN_REDIRECT_URL = '/dashboard'
+LOGIN_REDIRECT_URL = '/college/login/'
